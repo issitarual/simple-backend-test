@@ -20,6 +20,9 @@ export const countByFilter = (entity, filter, params) => {
 export const findAll = (entity) => {
 	return models[entity].findAll();
 };
+export const create = (entity, params) => {
+	return models[entity].create(params);
+};
 const raw = () => {
 	return models.sql;
 };
@@ -31,4 +34,5 @@ export default {
 	countByFilter,
 	raw,
 	findAll,
+	create
 };

@@ -14,3 +14,9 @@ export const getAndCountByFilter = (filter, params) => {
 export const countByFilter = (filter, params) => {
 	return db.countByFilter(ENTITY_NAME, filter, params);
 };
+export const findAll = () => {
+	return db.findAll(ENTITY_NAME);
+};
+export const create = (params) => {
+	return db.create(ENTITY_NAME, params);
+};
