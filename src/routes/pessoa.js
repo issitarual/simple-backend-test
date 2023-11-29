@@ -8,6 +8,8 @@ router.get(
 	`/person/:id(\\d+)`,
 	chain(async (req, res, next) => {
 		const pessoaModel = await pessoa.getById(req.params.id);
+
+		if(!pessoaModel) return res.sendStatus(404);
 		res.send(pessoaModel);
 	})
 );
@@ -23,14 +25,45 @@ router.get(
 router.post(
 	'/person',
 	chain(async (req, res, next) => {
-		const {nome} = req.body;
+		const {nome, cep, uf, cidade, dataNascimento} = req.body;
 
-		if(!nome) return sendStatus(404);
+		const validadeCep = /^[0-9]{8}$/.test(cep);
+		const validateUf = /^[A-Z]{2}$/.test(uf);
 
-		const Newpessoa = await pessoa.create({nome})
+		if(!nome || !validadeCep || !validateUf || !cidade || !dataNascimento ) return res.sendStatus(400);
+
+		const Newpessoa = await pessoa.create({nome, cep, uf, cidade, dataNascimento})
 		res.send(Newpessoa);
 	})
 );
+
+router.put(
+	`/person/:id(\\d+)`,
+	chain(async (req, res, next) => {
+		const {nome, cep, uf, cidade, dataNascimento} = req.body;
+
+		const validadeCep = /^[0-9]{8}$/.test(cep);
+		const validateUf = /^[A-Z]{2}$/.test(uf);
+
+		if(!nome || !validadeCep || !validateUf || !cidade || !dataNascimento) return res.sendStatus(400);
+
+		const pessoaModel = await pessoa.getById(req.params.id);
+
+		if(!pessoaModel) return res.sendStatus(404);
+
+		pessoaModel.set(
+			{
+				nome,
+				cep,
+				uf,
+				cidade,
+				dataNascimento
+			}
+		);
+		const updatedPerson = await pessoaModel.save();
+		res.send(updatedPerson);
+	})
+)
 
 router.delete(
 	`/person/:id(\\d+)`,
